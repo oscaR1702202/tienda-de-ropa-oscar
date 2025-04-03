@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,7 +10,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #0000FF;
+            background-color: #e9ecef;
             text-align: center;
         }
         .header {
@@ -17,131 +18,203 @@
             color: white;
             padding: 20px;
             font-size: 24px;
-        }
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 20px;
-        }
-        .item {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin: 15px;
-            padding: 20px;
-            width: 220px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-        .item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-        .item img {
             width: 100%;
-            border-radius: 10px;
         }
-        .buy-button {
-            background-color: #28a745;
-            color: white;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-            margin-top: 10px;
-            border-radius: 5px;
-            transition: background 0.3s;
+        .logo {
+            width: 250px;
+            height: auto;
+            margin: 20px auto;
+            display: block;
         }
-        .buy-button:hover {
-            background-color: #218838;
-        }
-        .admin-panel {
+        .auth {
             margin: 20px auto;
             padding: 20px;
+            width: 90%;
             max-width: 400px;
             background: white;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .admin-panel input, .admin-panel button {
+        .auth input {
             width: 100%;
             padding: 10px;
-            margin-top: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            border: 1px solid #ddd;
         }
-        .admin-panel button {
+        .buttons-container {
+            display: none;
+            text-align: center;
+            margin: 20px;
+        }
+        .buttons-container button, .auth button {
+            display: inline-block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            width: auto;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .buttons-container button:hover, .auth button:hover {
+            background-color: #218838;
+        }
+        .section {
+            display: none;
+            margin: 20px auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .item {
+            margin-bottom: 20px;
+        }
+        .item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .item button {
             background-color: #007bff;
             color: white;
             border: none;
+            padding: 10px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background-color 0.3s;
         }
-        .admin-panel button:hover {
+        .item button:hover {
             background-color: #0056b3;
         }
-        .logo {
-            margin-top: 20px;
-            max-width: 200px;
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>Tienda de Ropa - Oscar</h1>
-        <img src="WhatsApp Image 2025-04-02 at 11.12.03 AM.jpeg" alt="Logo" class="logo">
     </div>
-    
-    <div class="admin-panel">
-        <h2>Agregar Nuevo Producto</h2>
-        <input type="text" id="product-name" placeholder="Nombre del producto">
-        <input type="text" id="product-price" placeholder="Precio">
-        <input type="text" id="product-image" placeholder="URL de la imagen">
-        <button onclick="addProduct()">Agregar Producto</button>
+    <img src="WhatsApp Image 2025-04-02 at 11.12.03 AM.jpeg" alt="Logo" class="logo">
+
+    <div class="auth" id="auth-section">
+        <h2>Registro e Inicio de Sesión</h2>
+        <input type="text" id="username" placeholder="Usuario">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="login()">Iniciar Sesión</button>
+        <button onclick="register()">Registrarse</button>
     </div>
-    
-    <div class="container" id="product-container">
-        <div class="item">
-            <img src="https://via.placeholder.com/150" alt="Camisa">
-            <h2>Camisa</h2>
-            <p>$20.00</p>
-            <button class="buy-button">Comprar</button>
-        </div>
-        <div class="item">
-            <img src="https://via.placeholder.com/150" alt="Pantalón">
-            <h2>Pantalón</h2>
-            <p>$25.00</p>
-            <button class="buy-button">Comprar</button>
-        </div>
-        <div class="item">
-            <img src="https://via.placeholder.com/150" alt="Zapatos">
-            <h2>Zapatos</h2>
-            <p>$30.00</p>
-            <button class="buy-button">Comprar</button>
+
+    <div class="buttons-container" id="buttons-container">
+        <button onclick="showSection('product-container')">Camisas</button>
+        <button onclick="showSection('cart')">Carrito</button>
+        <button onclick="showSection('admin-panel')">Agregar Producto</button>
+    </div>
+
+    <div class="section" id="admin-panel">
+        <h2>Panel de Administrador</h2>
+        <button onclick="toggleProductForm()">Agregar Producto</button>
+        <div id="product-form" style="display: none;">
+            <input type="text" id="product-name" placeholder="Nombre del producto">
+            <input type="text" id="product-price" placeholder="Precio">
+            <input type="file" id="product-image" accept="image/*">
+            <button onclick="addProduct()">Agregar Producto</button>
         </div>
     </div>
-    
+
+    <div class="section" id="product-container">
+        <div class="item">
+            <img src="WhatsApp Image 2025-04-03 at 1.15.06 PM.jpeg" alt="Camiseta Hugo">
+            <h2>Camiseta Hugo</h2>
+            <p>$50,000</p>
+            <button onclick="addToCart('Camiseta Hugo', 50000)">Agregar al carrito</button>
+        </div>
+    </div>
+
+    <div class="section" id="cart">
+        <h2>Carrito de Compras</h2>
+        <ul id="cart-items"></ul>
+    </div>
+
     <script>
+        let cart = [];
+        let loggedIn = false;
+
+        function login() {
+            loggedIn = true;
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('buttons-container').style.display = 'block';
+        }
+
+        function register() {
+            alert('Registro exitoso. Ahora puede iniciar sesión.');
+        }
+
+        function showSection(sectionId) {
+            document.getElementById('product-container').style.display = 'none';
+            document.getElementById('cart').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'none';
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function toggleProductForm() {
+            let form = document.getElementById('product-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
         function addProduct() {
             let name = document.getElementById('product-name').value;
             let price = document.getElementById('product-price').value;
-            let image = document.getElementById('product-image').value;
-            
-            if(name && price && image) {
-                let container = document.getElementById('product-container');
-                let newItem = document.createElement('div');
-                newItem.classList.add('item');
-                newItem.innerHTML = `
-                    <img src="${image}" alt="${name}">
-                    <h2>${name}</h2>
-                    <p>$${price}</p>
-                    <button class="buy-button">Comprar</button>
-                `;
-                container.appendChild(newItem);
+            let imageInput = document.getElementById('product-image');
+
+            if (name && price && imageInput.files.length > 0) {
+                let file = imageInput.files[0];
+                let reader = new FileReader();
+
+                reader.onload = function(event) {
+                    let imageSrc = event.target.result;
+                    let container = document.getElementById('product-container');
+                    let newItem = document.createElement('div');
+                    newItem.classList.add('item');
+                    newItem.innerHTML = `
+                        <img src="${imageSrc}" alt="${name}">
+                        <h2>${name}</h2>
+                        <p>$${price}</p>
+                        <button onclick="addToCart('${name}', ${price})">Agregar al carrito</button>
+                    `;
+                    container.appendChild(newItem);
+                };
+
+                reader.readAsDataURL(file);
             } else {
-                alert('Por favor, completa todos los campos.');
+                alert('Por favor, completa todos los campos y selecciona una imagen.');
             }
+        }
+
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            updateCartDisplay();
+            alert(`${name} agregado al carrito.`);
+        }
+
+        function updateCartDisplay() {
+            let cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                let li = document.createElement('li');
+                li.classList.add('cart-item');
+                li.innerHTML = `<span>${item.name} - $${item.price}</span>`;
+                cartItems.appendChild(li);
+            });
         }
     </script>
 </body>
