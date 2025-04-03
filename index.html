@@ -109,6 +109,25 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+        /* Botón de atención a WhatsApp */
+        .whatsapp-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #25d366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+        }
+        .whatsapp-button img {
+            width: 30px;
+            height: 30px;
+        }
     </style>
 </head>
 <body>
@@ -171,6 +190,11 @@
         <button onclick="checkout()">Comprar</button>
     </div>
 
+    <!-- Botón de WhatsApp -->
+    <div class="whatsapp-button" onclick="window.open('https://wa.me/573135843356', '_blank')">
+        <img src="WhatsApp Image 2025-04-02 at 11.12.03 AM.jpeg" alt="WhatsApp">
+    </div>
+
     <script>
         let cart = [];
         let loggedIn = false;
@@ -231,93 +255,66 @@
 
         function toggleDeleteProducts() {
             deleteMode = !deleteMode;
-            updateProductList();
+            alert(deleteMode ? 'Modo de eliminación activado' : 'Modo de eliminación desactivado');
+        }
+
+        function deleteProduct(index) {
+            if (deleteMode) {
+                products.splice(index, 1);
+                updateProductList();
+                alert('Producto eliminado.');
+            }
         }
 
         function updateProductList() {
             let container = document.getElementById('product-container');
             container.innerHTML = '';
-            products.forEach(product => {
-                let item = document.createElement('div');
-                item.classList.add('item');
-                item.innerHTML = `
+            products.forEach((product, index) => {
+                let productDiv = document.createElement('div');
+                productDiv.classList.add('item');
+                productDiv.innerHTML = `
                     <img src="${product.imgSrc}" alt="${product.name}">
                     <h2>${product.name}</h2>
                     <p>$${product.price}</p>
                     <button onclick="addToCart('${product.name}', ${product.price})">Agregar al carrito</button>
+                    ${isAdmin ? `<button onclick="deleteProduct(${index})">Eliminar Producto</button>` : ''}
                 `;
-                container.appendChild(item);
+                container.appendChild(productDiv);
             });
-
-            if (isAdmin) {
-                let adminContainer = document.getElementById('product-list');
-                adminContainer.innerHTML = '<h3>Productos disponibles</h3>';
-                products.forEach((product, index) => {
-                    let productItem = document.createElement('div');
-                    productItem.classList.add('admin-actions');
-                    if (deleteMode) {
-                        productItem.innerHTML = `
-                            <p>${product.name} - $${product.price}</p>
-                            <button onclick="removeProduct(${index})">Eliminar</button>
-                        `;
-                    } else {
-                        productItem.innerHTML = `
-                            <p>${product.name} - $${product.price}</p>
-                        `;
-                    }
-                    adminContainer.appendChild(productItem);
-                });
-            }
         }
 
         function addToCart(name, price) {
             cart.push({ name, price });
             updateCartDisplay();
-            alert(`${name} agregado al carrito.`);
-        }
-
-        function removeProduct(index) {
-            products.splice(index, 1);
-            updateProductList();
         }
 
         function updateCartDisplay() {
             let cartItems = document.getElementById('cart-items');
-            cartItems.innerHTML = '';
             let total = 0;
-            cart.forEach((item, index) => {
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                total += item.price;
                 let li = document.createElement('li');
                 li.classList.add('cart-item');
-                li.innerHTML = `
-                    <span>${item.name} - $${item.price}</span>
-                    <button onclick="removeFromCart(${index})">Eliminar</button>
-                `;
+                li.innerHTML = `<span>${item.name} - $${item.price}</span>
+                                <button onclick="removeFromCart('${item.name}')">Eliminar</button>`;
                 cartItems.appendChild(li);
-                total += item.price;
             });
             document.getElementById('cart-total').textContent = total;
         }
 
-        function removeFromCart(index) {
-            cart.splice(index, 1);
+        function removeFromCart(name) {
+            cart = cart.filter(item => item.name !== name);
             updateCartDisplay();
         }
 
         function checkout() {
-            if (cart.length > 0) {
-                alert('¡Gracias por tu compra! El total de tu carrito es: $' + document.getElementById('cart-total').textContent);
-                cart = []; // Vaciar el carrito después de la compra
-                updateCartDisplay();
-            } else {
-                alert('Tu carrito está vacío.');
-            }
+            alert('Compra realizada con éxito');
+            cart = [];
+            updateCartDisplay();
         }
 
-        // Cambiar colores y estilos
-        function showCustomizationForm() {
-            document.getElementById('customization-form').style.display = 'block';
-        }
-
+        // Funciones para modificar apariencia
         function changeBackgroundColor() {
             let color = document.getElementById('background-color').value;
             document.body.style.backgroundColor = color;
@@ -331,6 +328,10 @@
         function changeTextColor() {
             let color = document.getElementById('text-color').value;
             document.body.style.color = color;
+        }
+
+        function showCustomizationForm() {
+            document.getElementById('customization-form').style.display = 'block';
         }
     </script>
 </body>
