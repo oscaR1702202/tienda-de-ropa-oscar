@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda de Ropa - Oscar</title>
-    <style>
+    <style id="dynamic-styles">
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -98,6 +97,18 @@
             align-items: center;
             margin-bottom: 10px;
         }
+        .admin-actions button {
+            background-color: #dc3545;
+        }
+        .admin-actions button:hover {
+            background-color: #c82333;
+        }
+        .customization-form {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -117,42 +128,67 @@
     <div class="buttons-container" id="buttons-container">
         <button onclick="showSection('product-container')">Camisas</button>
         <button onclick="showSection('cart')">Carrito</button>
-        <button onclick="showSection('admin-panel')">Agregar Producto</button>
+        <button onclick="showSection('admin-panel')">Administrar Productos</button>
     </div>
 
     <div class="section" id="admin-panel">
         <h2>Panel de Administrador</h2>
-        <button onclick="toggleProductForm()">Agregar Producto</button>
+        <div class="admin-actions">
+            <button onclick="toggleProductForm()">Agregar Producto</button>
+            <button onclick="toggleDeleteProducts()">Eliminar Productos</button>
+        </div>
+        <div class="admin-actions">
+            <button onclick="showCustomizationForm()">Modificar Apariencia</button>
+        </div>
         <div id="product-form" style="display: none;">
             <input type="text" id="product-name" placeholder="Nombre del producto">
             <input type="text" id="product-price" placeholder="Precio">
             <input type="file" id="product-image" accept="image/*">
             <button onclick="addProduct()">Agregar Producto</button>
         </div>
+        <div id="product-list"></div>
+        <div id="customization-form" class="customization-form" style="display: none;">
+            <h3>Cambiar Colores y Estilos</h3>
+            <label for="background-color">Color de fondo:</label>
+            <input type="color" id="background-color" onchange="changeBackgroundColor()">
+            <br>
+            <label for="header-color">Color de encabezado:</label>
+            <input type="color" id="header-color" onchange="changeHeaderColor()">
+            <br>
+            <label for="text-color">Color de texto:</label>
+            <input type="color" id="text-color" onchange="changeTextColor()">
+        </div>
     </div>
 
     <div class="section" id="product-container">
-        <div class="item">
-            <img src="WhatsApp Image 2025-04-03 at 1.15.06 PM.jpeg" alt="Camiseta Hugo">
-            <h2>Camiseta Hugo</h2>
-            <p>$50,000</p>
-            <button onclick="addToCart('Camiseta Hugo', 50000)">Agregar al carrito</button>
-        </div>
+        <!-- Productos disponibles para los usuarios -->
     </div>
 
     <div class="section" id="cart">
         <h2>Carrito de Compras</h2>
         <ul id="cart-items"></ul>
+        <h3>Total: $<span id="cart-total">0</span></h3>
+        <button onclick="checkout()">Comprar</button>
     </div>
 
     <script>
         let cart = [];
         let loggedIn = false;
+        let isAdmin = false;
+        let deleteMode = false; // Modo de eliminación de productos
+
+        const products = [
+            { name: 'Camiseta Hugo', price: 50000, imgSrc: 'WhatsApp Image 2025-04-03 at 1.15.06 PM.jpeg' }
+        ];
 
         function login() {
             loggedIn = true;
+            // Definir si es admin
+            isAdmin = document.getElementById('username').value === 'admin'; 
             document.getElementById('auth-section').style.display = 'none';
             document.getElementById('buttons-container').style.display = 'block';
+            showSection('product-container');
+            updateProductList();
         }
 
         function register() {
@@ -182,21 +218,55 @@
 
                 reader.onload = function(event) {
                     let imageSrc = event.target.result;
-                    let container = document.getElementById('product-container');
-                    let newItem = document.createElement('div');
-                    newItem.classList.add('item');
-                    newItem.innerHTML = `
-                        <img src="${imageSrc}" alt="${name}">
-                        <h2>${name}</h2>
-                        <p>$${price}</p>
-                        <button onclick="addToCart('${name}', ${price})">Agregar al carrito</button>
-                    `;
-                    container.appendChild(newItem);
+                    products.push({ name, price: parseFloat(price), imgSrc: imageSrc });
+                    updateProductList();
+                    alert(`${name} agregado correctamente.`);
                 };
 
                 reader.readAsDataURL(file);
             } else {
                 alert('Por favor, completa todos los campos y selecciona una imagen.');
+            }
+        }
+
+        function toggleDeleteProducts() {
+            deleteMode = !deleteMode;
+            updateProductList();
+        }
+
+        function updateProductList() {
+            let container = document.getElementById('product-container');
+            container.innerHTML = '';
+            products.forEach(product => {
+                let item = document.createElement('div');
+                item.classList.add('item');
+                item.innerHTML = `
+                    <img src="${product.imgSrc}" alt="${product.name}">
+                    <h2>${product.name}</h2>
+                    <p>$${product.price}</p>
+                    <button onclick="addToCart('${product.name}', ${product.price})">Agregar al carrito</button>
+                `;
+                container.appendChild(item);
+            });
+
+            if (isAdmin) {
+                let adminContainer = document.getElementById('product-list');
+                adminContainer.innerHTML = '<h3>Productos disponibles</h3>';
+                products.forEach((product, index) => {
+                    let productItem = document.createElement('div');
+                    productItem.classList.add('admin-actions');
+                    if (deleteMode) {
+                        productItem.innerHTML = `
+                            <p>${product.name} - $${product.price}</p>
+                            <button onclick="removeProduct(${index})">Eliminar</button>
+                        `;
+                    } else {
+                        productItem.innerHTML = `
+                            <p>${product.name} - $${product.price}</p>
+                        `;
+                    }
+                    adminContainer.appendChild(productItem);
+                });
             }
         }
 
@@ -206,17 +276,62 @@
             alert(`${name} agregado al carrito.`);
         }
 
+        function removeProduct(index) {
+            products.splice(index, 1);
+            updateProductList();
+        }
+
         function updateCartDisplay() {
             let cartItems = document.getElementById('cart-items');
             cartItems.innerHTML = '';
-            cart.forEach(item => {
+            let total = 0;
+            cart.forEach((item, index) => {
                 let li = document.createElement('li');
                 li.classList.add('cart-item');
-                li.innerHTML = `<span>${item.name} - $${item.price}</span>`;
+                li.innerHTML = `
+                    <span>${item.name} - $${item.price}</span>
+                    <button onclick="removeFromCart(${index})">Eliminar</button>
+                `;
                 cartItems.appendChild(li);
+                total += item.price;
             });
+            document.getElementById('cart-total').textContent = total;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartDisplay();
+        }
+
+        function checkout() {
+            if (cart.length > 0) {
+                alert('¡Gracias por tu compra! El total de tu carrito es: $' + document.getElementById('cart-total').textContent);
+                cart = []; // Vaciar el carrito después de la compra
+                updateCartDisplay();
+            } else {
+                alert('Tu carrito está vacío.');
+            }
+        }
+
+        // Cambiar colores y estilos
+        function showCustomizationForm() {
+            document.getElementById('customization-form').style.display = 'block';
+        }
+
+        function changeBackgroundColor() {
+            let color = document.getElementById('background-color').value;
+            document.body.style.backgroundColor = color;
+        }
+
+        function changeHeaderColor() {
+            let color = document.getElementById('header-color').value;
+            document.querySelector('.header').style.backgroundColor = color;
+        }
+
+        function changeTextColor() {
+            let color = document.getElementById('text-color').value;
+            document.body.style.color = color;
         }
     </script>
 </body>
 </html>
-
