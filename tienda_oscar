@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda de Ropa - Oscar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+        .item {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin: 10px;
+            padding: 15px;
+            width: 200px;
+            text-align: center;
+        }
+        .item img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .buy-button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Tienda de Ropa - Oscar</h1>
+    </div>
+    <div class="container">
+        <div class="item">
+            <img src="https://via.placeholder.com/150" alt="Camisa">
+            <h2>Camisa</h2>
+            <p>$20.00</p>
+            <button class="buy-button">Comprar</button>
+        </div>
+        <div class="item">
+            <img src="https://via.placeholder.com/150" alt="Pantalón">
+            <h2>Pantalón</h2>
+            <p>$25.00</p>
+            <button class="buy-button">Comprar</button>
+        </div>
+        <div class="item">
+            <img src="https://via.placeholder.com/150" alt="Zapatos">
+            <h2>Zapatos</h2>
+            <p>$30.00</p>
+            <button class="buy-button">Comprar</button>
+        </div>
+    </div>
+</body>
+</html>
