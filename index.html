@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f8f9fa;
+            background-color: #0000FF;
             text-align: center;
         }
         .header {
@@ -56,13 +56,52 @@
         .buy-button:hover {
             background-color: #218838;
         }
+        .admin-panel {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .admin-panel input, .admin-panel button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .admin-panel button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .admin-panel button:hover {
+            background-color: #0056b3;
+        }
+        .logo {
+            margin-top: 20px;
+            max-width: 200px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>Tienda de Ropa - Oscar</h1>
+        <img src="WhatsApp Image 2025-04-02 at 11.12.03 AM.jpeg" alt="Logo" class="logo">
     </div>
-    <div class="container">
+    
+    <div class="admin-panel">
+        <h2>Agregar Nuevo Producto</h2>
+        <input type="text" id="product-name" placeholder="Nombre del producto">
+        <input type="text" id="product-price" placeholder="Precio">
+        <input type="text" id="product-image" placeholder="URL de la imagen">
+        <button onclick="addProduct()">Agregar Producto</button>
+    </div>
+    
+    <div class="container" id="product-container">
         <div class="item">
             <img src="https://via.placeholder.com/150" alt="Camisa">
             <h2>Camisa</h2>
@@ -82,5 +121,29 @@
             <button class="buy-button">Comprar</button>
         </div>
     </div>
+    
+    <script>
+        function addProduct() {
+            let name = document.getElementById('product-name').value;
+            let price = document.getElementById('product-price').value;
+            let image = document.getElementById('product-image').value;
+            
+            if(name && price && image) {
+                let container = document.getElementById('product-container');
+                let newItem = document.createElement('div');
+                newItem.classList.add('item');
+                newItem.innerHTML = `
+                    <img src="${image}" alt="${name}">
+                    <h2>${name}</h2>
+                    <p>$${price}</p>
+                    <button class="buy-button">Comprar</button>
+                `;
+                container.appendChild(newItem);
+            } else {
+                alert('Por favor, completa todos los campos.');
+            }
+        }
+    </script>
 </body>
 </html>
+
